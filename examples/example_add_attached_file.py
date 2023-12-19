@@ -51,7 +51,7 @@ def main():
     # This means uploading the content of the attachment failed.
     while result.add_attachment_status == hh.AddAttachmentStatus.FAILED_TO_UPLOAD or result.add_attachment_status == hh.AddAttachmentStatus.FAILED_TO_UPDATE_SERVER_STATUS:
         print(f'Attachment failed for reason {result.add_attachment_status}.\n{result.message}\n Retrying...')
-        result = asyncio.run(client.retry_run_sheet_attachment(result))
+        result = asyncio.run(client.retry_event_attachment(result))
         sleep(0.5)
 
     print(f'File added successfully.')
