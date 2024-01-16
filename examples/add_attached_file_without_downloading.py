@@ -5,7 +5,7 @@ from time import sleep
 import hhdm_apiclient_wrapper as hh
 
 
-def main():
+async def main():
     # This can be found by visiting https://hh-dev.com, logging in, and selecting "HH Data Management" -> "Integrations"
     api_key = 'YOUR_API_KEY'
 
@@ -28,7 +28,7 @@ def main():
     custom_property_attached_file_name = None
 
     with requests.get(file_url, stream=True) as file_stream:
-        result = asyncio.run(client.add_attachment_to_championship(
+        result = await client.add_attachment_to_championship(
             account_id,
             championship_id,
             hh.ApiPrepareUploadModel(
@@ -38,7 +38,7 @@ def main():
                 False,  # if True then the file will be automatically downloaded on all users computers that have access to the file (should be False in most cases)
                 True  # lets you specify whether the file should be compressed before uploading, generally this should be set to True
             ),
-            file_stream.content))
+            file_stream.content)
 
         # This means there was an error adding the attached file property in HH DM
         if result.add_attachment_status == hh.AddAttachmentStatus.FAILED_TO_ADD:
@@ -49,13 +49,13 @@ def main():
         while (result.add_attachment_status == hh.AddAttachmentStatus.FAILED_TO_UPLOAD
                or result.add_attachment_status == hh.AddAttachmentStatus.FAILED_TO_UPDATE_SERVER_STATUS):
             print(f'Attachment failed for reason {result.add_attachment_status}.\n{result.message}\n Retrying...')
-            result = asyncio.run(client.retry_championship_attachment(result, file_stream.content))
+            result = await client.retry_championship_attachment(result, file_stream.content)
             sleep(0.5)
 
     print(f'File added successfully.')
 
 
 if __name__ == '__main__':
-    main()
+    asyncio.run(main())
 
 

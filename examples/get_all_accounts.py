@@ -4,7 +4,7 @@ import json
 import hhdm_apiclient_wrapper as hh
 
 
-def main():
+async def main():
     api_key = 'YOUR_API_KEY'
 
     auth_settings = hh.AuthenticationSettings(
@@ -15,11 +15,11 @@ def main():
 
     print(f'Api client wrapper v{client.get_version()}. Running get_all_accounts demo.')
 
-    result = asyncio.run(client.get_all_accounts())
+    result = await client.get_all_accounts()
 
     print(f'get_all_accounts result: {result.status_code}')
     print(json.dumps(result.return_value, indent=4))
 
 
 if __name__ == '__main__':
-    main()
+    asyncio.run(main())

@@ -5,7 +5,7 @@ from time import sleep
 import hhdm_apiclient_wrapper as hh
 
 
-def main():
+async def main():
     # This can be found by visiting https://hh-dev.com, logging in, and selecting "HH Data Management" -> "Integrations"
     api_key = 'YOUR_API_KEY'
 
@@ -30,7 +30,7 @@ def main():
 
     file_name = path.basename(file_path)  # This is the file name that HH DM will see
 
-    result = asyncio.run(client.add_attachment_to_event(
+    result = await client.add_attachment_to_event(
         account_id,
         event_id,
         hh.ApiPrepareUploadModel(
@@ -41,7 +41,7 @@ def main():
             True  # lets you specify whether the file should be compressed before uploading, generally this should be set to True
         ),
         file_path
-    ))
+    )
 
     # This means there was an error adding the attached file property in HH DM
     if result.add_attachment_status == hh.AddAttachmentStatus.FAILED_TO_ADD:
@@ -51,13 +51,13 @@ def main():
     # This means uploading the content of the attachment failed.
     while result.add_attachment_status == hh.AddAttachmentStatus.FAILED_TO_UPLOAD or result.add_attachment_status == hh.AddAttachmentStatus.FAILED_TO_UPDATE_SERVER_STATUS:
         print(f'Attachment failed for reason {result.add_attachment_status}.\n{result.message}\n Retrying...')
-        result = asyncio.run(client.retry_event_attachment(result))
+        result = await client.retry_event_attachment(result)
         sleep(0.5)
 
     print(f'File added successfully.')
 
 
 if __name__ == '__main__':
-    main()
+    asyncio.run(main())
 
 

@@ -3,7 +3,7 @@ import asyncio
 import hhdm_apiclient_wrapper as hh
 
 
-def main():
+async def main():
     api_key = 'YOUR_API_KEY'
 
     auth_settings = hh.AuthenticationSettings(
@@ -14,7 +14,7 @@ def main():
 
     print(f'Api client wrapper v{client.get_version()}. Running lap average computation demo.')
 
-    result = asyncio.run(client.get_all_accounts())
+    result = await client.get_all_accounts()
     if not result.success:
         print(f'Failed to get account information: {result.message}')
         return
@@ -22,15 +22,15 @@ def main():
     account = get_named_input(result.return_value, 'Enter the number of the account to run the demo on: ', lambda x: x['Name'])
     account_id = account['Id']
 
-    championships_result = asyncio.run(client.get_all_championships(account_id, hh.ApiGetOptions([
+    championships_result = await client.get_all_championships(account_id, hh.ApiGetOptions([
         '*',
         'Events.*',
         'Events.Sessions.*',
         'Events.Cars.*',
         'Events.Cars.Car.*'
-    ])))
+    ]))
     if not championships_result.success:
-        print(f'Failed to get championship information: {result.message}')
+        print(f'Failed to get championship information: {championships_result.message}')
         return
 
     championship = get_named_input(championships_result.return_value, 'Select a championship: ')
@@ -44,7 +44,7 @@ def main():
     print(f'Session: {session_id}')
     print(f'Car: {car_id}')
 
-    runsheets_result = asyncio.run(client.get_all_run_sheets_for_session_car(account_id, session_id, car_id, hh.ApiGetOptions(['RunName','Laps.LapTime'])))
+    runsheets_result = await client.get_all_run_sheets_for_session_car(account_id, session_id, car_id, hh.ApiGetOptions(['RunName','Laps.LapTime']))
     if not runsheets_result.success:
         print(f'Failed to get runsheets: {result.message}')
         return
@@ -57,9 +57,9 @@ def main():
     print(f"Average laptime for \"{runsheet['Parameters']['RunName']}\" with {len(laptimes)} laps: {avg_lap} s")
     print('\nUpdating runsheet AverageLapTimeCalculated...')
 
-    update_result = asyncio.run(client.update_run_sheet(account_id, runsheet['Id'], hh.UpdateModel(None,[
+    update_result = await client.update_run_sheet(account_id, runsheet['Id'], hh.UpdateModel(None,[
         hh.ParameterUpdateModel('AverageLapTimeCalculated', str(avg_lap))
-    ])))
+    ]))
     if update_result:
         print('Success.')
     else:
@@ -78,4 +78,4 @@ def get_named_input(items, prompt, name_accessor=lambda x: x['Parameters']['Name
 
 
 if __name__ == '__main__':
-    main()
+    asyncio.run(main())
