@@ -10,3 +10,4 @@ In all examples an [API key](https://help.hh-dm.com/extensibility/api/#authentic
 * [`get_all_accounts.py`](/examples/get_all_accounts.py) Shows how to get all the account names and IDs your API key has access to.
 * [`runsheet_laps.py`](/examples/runsheet_laps.py) Console application that walks the user through finding a run, then computes the average lap time for the run and writes the result to a variable on the run.
 * [`get_setups.py`](/examples/get_setups.py) Console application that walks the user through finding setup information by selecting the championship, event and car of interest.
+* [`get_run_setups.py`](/examples/get_run_setups.py) Console application that walks the user through finding setup information by selecting the championship, event and session, and car of interest. Displays how many runs each car has in the selected session and returns only the setups attached to found runs.
