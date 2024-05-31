@@ -37,7 +37,10 @@ async def main():
     ]
 
     print('Writing ambient measurements to selected event...')
-    weather_result = await client.add_ambient_measurement(account_id, event['Id'], hh.CreateModel(False, False, -1, weather_data))
+    weather_result = await client.add_ambient_measurement(
+        account_id,
+        event['Id'],
+        hh.CreateModel(parameter_updates=weather_data))
 
     print(f'add_ambient_measurement result: {weather_result.success}')
     print(json.dumps(weather_result.return_value, indent=4))
