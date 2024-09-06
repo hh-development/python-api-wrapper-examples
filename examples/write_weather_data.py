@@ -34,6 +34,7 @@ async def main():
         hh.ParameterUpdateModel("AirTemperature", "13"),
         hh.ParameterUpdateModel("TrackTemperature", "30"),
         hh.ParameterUpdateModel("WindSpeed", "55"),
+        hh.ParameterUpdateModel("AmbientMeasurementDataSource", "2"),  # 0 = Weather Station; 1 = Manual; 2 = Imported; 3 = Timing Feed
     ]
 
     print('Writing ambient measurements to selected event...')
