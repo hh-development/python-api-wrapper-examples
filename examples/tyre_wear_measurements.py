@@ -6,8 +6,8 @@ import hhdm_apiclient_wrapper as hh
 
 
 async def main():
-    api_key = ''
-    account_id = ''
+    api_key = 'YOUR_API_KEY'
+    account_id = 'YOUR_ACCOUNT_ID'
 
     auth_settings = hh.AuthenticationSettings(
         api_key=api_key,
@@ -47,8 +47,10 @@ async def main():
     tyre_id = tyre['Id']
     print(f'Selecting first tyre to add wear measurement to with name {tyre['Parameters']['Name']}')
 
-    measurement_result = await client.add_tyre_wear_measurement(account_id, tyre_id, hh.CreateModel())
-    print(f"Add measurements result {measurement_result.success}")
+    measurement_result = await client.add_tyre_wear_measurement(account_id, tyre_id, 1, hh.CreateModel())
+    print(f"Add measurements result: {measurement_result.success}")
+
+    await client.close()
 
 
 def get_named_input(items, prompt, name_accessor=lambda x: x['Parameters']['Name']):

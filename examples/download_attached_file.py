@@ -62,6 +62,9 @@ async def main():
 
     print(f'Uncompressed file to: {dest_path}\\{file_name}')
 
+    await client.close()
+
+
 def get_named_input(items, prompt, name_accessor=lambda x: x['Parameters']['Name']):
     if len(items) == 0:
         print('No entities were found.')

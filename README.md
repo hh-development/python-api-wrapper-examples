@@ -14,3 +14,4 @@ In all examples an [API key](https://help.hh-dm.com/extensibility/api/#authentic
 * [`write_weather_data.py`](/examples/write_weather_data.py) Console application that allows the user to select a championship/event and write weather measurement data to it.
 * [`download_attached_file.py`](/examples/download_attached_file.py) Console application that allows the user to select an attached file from an event and downloads and automatically decompresses it to a given directory.
 * [`copy_setup.py`](/examples/copy_setup.py) Shows how to create a new setup by copying an existing one and modifying specified parameters.
+* [`concurrent_requests.py`](/examples/concurrent_requests.py) Demonstrates how multiple, non-blocking, long running API requests can be sent at once.

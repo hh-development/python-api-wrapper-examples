@@ -51,8 +51,8 @@ async def main():
 
     runsheet = get_named_input(runsheets_result.return_value, 'Select a runsheet: ', lambda x: x['Parameters']['RunName'])
 
-    laptimes = [l['Parameters']['LapTime'] for l in runsheet['Laps']]
-    avg_lap = sum(laptimes) / len(laptimes)
+    laptimes = [l['Parameters']['LapTime'] for l in runsheet['Laps'] if l['Parameters']['LapTime']]
+    avg_lap = sum(laptimes) / len(laptimes) if len(laptimes) > 0 else 0
 
     print(f"Average laptime for \"{runsheet['Parameters']['RunName']}\" with {len(laptimes)} laps: {avg_lap} s")
     print('\nUpdating runsheet AverageLapTimeCalculated...')
@@ -64,6 +64,8 @@ async def main():
         print('Success.')
     else:
         print('Failed.')
+
+    await client.close()
 
 
 def get_named_input(items, prompt, name_accessor=lambda x: x['Parameters']['Name']):

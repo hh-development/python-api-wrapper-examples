@@ -36,6 +36,8 @@ async def main():
     print(f'get_all_setups_for_event_car result: {setups_result.success}')
     print(json.dumps(setups_result.return_value, indent=4))
 
+    await client.close()
+
 
 def get_named_input(items, prompt, name_accessor=lambda x: x['Parameters']['Name']):
     if len(items) == 0:

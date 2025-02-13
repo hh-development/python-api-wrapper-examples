@@ -20,6 +20,8 @@ async def main():
     print(f'get_all_accounts result: {result.status_code}')
     print(json.dumps(result.return_value, indent=4))
 
+    await client.close()
+
 
 if __name__ == '__main__':
     asyncio.run(main())

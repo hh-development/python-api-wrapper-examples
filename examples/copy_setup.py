@@ -38,6 +38,8 @@ async def main():
     else:
         print(f'Failed to copy setup "{base_setup_id}".')
 
+    await client.close()
+
 
 if __name__ == '__main__':
     asyncio.run(main())

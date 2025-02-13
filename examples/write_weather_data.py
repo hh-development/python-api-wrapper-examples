@@ -30,7 +30,7 @@ async def main():
 
     # Enter your measurement data here
     weather_data = [
-        hh.ParameterUpdateModel("MeasurementTime", datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%S.%fZ')),  # e.g. 2024-01-23T11:42:45.083193Z
+        hh.ParameterUpdateModel("MeasurementTime", datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%S.%fZ')[:-4]+'Z'),  # e.g. 2024-01-23T11:42:45.083193Z
         hh.ParameterUpdateModel("AirTemperature", "13"),
         hh.ParameterUpdateModel("TrackTemperature", "30"),
         hh.ParameterUpdateModel("WindSpeed", "55"),
@@ -45,6 +45,8 @@ async def main():
 
     print(f'add_ambient_measurement result: {weather_result.success}')
     print(json.dumps(weather_result.return_value, indent=4))
+
+    await client.close()
 
 
 def get_named_input(items, prompt, name_accessor=lambda x: x['Parameters']['Name']):

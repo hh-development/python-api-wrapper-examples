@@ -8,7 +8,6 @@ import hhdm_apiclient_wrapper as hh
 async def main():
     # This can be found by visiting https://hh-dev.com, logging in, and selecting "HH Data Management" -> "Integrations"
     api_key = 'YOUR_API_KEY'
-
     account_id = 'YOUR_ACCOUNT_ID'
     championship_id = 'YOUR_CHAMPIONSHIP_ID'
 
@@ -53,6 +52,8 @@ async def main():
             sleep(0.5)
 
     print(f'File added successfully.')
+
+    await client.close()
 
 
 if __name__ == '__main__':

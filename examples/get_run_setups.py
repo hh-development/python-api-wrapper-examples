@@ -59,6 +59,8 @@ async def main():
 
     print(json.dumps(run_setups, indent=2))
 
+    await client.close()
+
 
 def get_named_input(items, prompt, name_accessor=lambda x: x['Parameters']['Name']):
     if len(items) == 0:
