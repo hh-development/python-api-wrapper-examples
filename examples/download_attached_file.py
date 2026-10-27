@@ -1,7 +1,5 @@
 import asyncio
 from os import path
-import lz4.frame
-import requests
 
 import hhdm_apiclient_wrapper as hh
 
@@ -19,50 +17,37 @@ async def main():
     )
     client = hh.ApiClient(authentication_manager=hh.AuthenticationManager(auth_settings))
 
-    print(f'Api client wrapper v{client.get_version()}. Running download compressed attached file demo on account "{account_id}" and event "{event_id}".\n')
+    print(
+        f'Api client wrapper v{client.get_version()}. Running download compressed attached file demo on account "{account_id}" and event "{event_id}".\n')
 
     dest_path = 'C:\\HHDM-Export\\HHDM-Files'
 
     if not path.isdir(dest_path):
         return
 
-    events_result = await client.get_event_by_id(account_id, event_id, hh.ApiGetOptions(['AttachedFiles.*']))
+    try:
+        events_result = await client.get_event_by_id(account_id, event_id, hh.ApiGetOptions(['AttachedFiles.*']))
 
-    if not events_result.success:
-        print(f'Failed to get file information: {events_result.message}')
-        return
+        if not events_result.success:
+            print(f'Failed to get file information: {events_result.message}')
+            return
 
-    selected_file = get_named_input(events_result.return_value['AttachedFiles'], 'Select file to download: ', lambda x: x['Parameters']['FileName'])
-    file_name = selected_file['Parameters']['FileName']
-    is_compressed = selected_file['Parameters']['UseCompression']
+        selected_file = get_named_input(events_result.return_value['AttachedFiles'], 'Select file to download: ', lambda x: x['Parameters']['FileName'])
+        file_name = selected_file['Parameters']['FileName']
 
-    download_result = await client.get_event_attachments_by_id(account_id, event_id, [selected_file['Id']])
+        download_result = await client.get_event_attachments_by_id(account_id, event_id, [selected_file['Id']])
 
-    if not download_result.success:
-        print(f'Failed to get signed URL to download file from: {download_result.message}')
-        return
+        if not download_result.success:
+            print(f'Failed to get signed URL to download file ({download_result.status_code}): {download_result.message}')
+            return
 
-    download_url = download_result.return_value[0]['SignedURL']
-    file_content = requests.get(download_url)
+        dest_filepath = f'{dest_path}\\{file_name}'
+        await client.download_file(download_result.return_value[0], f'{dest_path}\\{file_name}')
 
-    dest_filepath = f'{dest_path}\\{file_name}.lz4' if is_compressed else f'{dest_path}\\{file_name}'
+        print(f'Downloaded file to: {dest_filepath}')
 
-    with open(dest_filepath, 'wb') as f:
-        f.write(file_content.content)
-
-    print(f'Downloaded file to: {dest_filepath}')
-
-    if not is_compressed:
-        return
-
-    uncompressed = lz4.frame.decompress(file_content.content)
-
-    with open(f'{dest_path}\\{file_name}', 'wb') as f:
-        f.write(uncompressed)
-
-    print(f'Uncompressed file to: {dest_path}\\{file_name}')
-
-    await client.close()
+    finally:
+        await client.close()
 
 
 def get_named_input(items, prompt, name_accessor=lambda x: x['Parameters']['Name']):
@@ -70,7 +55,7 @@ def get_named_input(items, prompt, name_accessor=lambda x: x['Parameters']['Name
         print('No entities were found.')
         return None
 
-    print('\n'.join([f"{i+1}) {name_accessor(item)}" for (i, item) in enumerate(items)]))
+    print('\n'.join([f"{i + 1}) {name_accessor(item)}" for (i, item) in enumerate(items)]))
     idx = int(input(prompt)) - 1
     print(f'You selected "{name_accessor(items[idx])}"\n')
     return items[idx]
@@ -78,5 +63,3 @@ def get_named_input(items, prompt, name_accessor=lambda x: x['Parameters']['Name
 
 if __name__ == '__main__':
     asyncio.run(main())
-
-
