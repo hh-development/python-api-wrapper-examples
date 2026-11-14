@@ -1,6 +1,6 @@
 certifi>=2024.7.4
 charset-normalizer>=3.3.2
-hhdm-apiclient-wrapper>=26.1.29.0
+hhdm-apiclient-wrapper>=26.2.14.0
 idna>=3.7
 lz4>=4.3.3
 httpx>=0.28.1
